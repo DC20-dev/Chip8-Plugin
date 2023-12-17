@@ -4,6 +4,7 @@
 #include "Interfaces/IPluginManager.h"
 THIRD_PARTY_INCLUDES_START
 #include "Chip8EmulatorLibrary/Public/emulator.h"
+#include "Chip8EmulatorLibrary/Public/gamefile.h"
 THIRD_PARTY_INCLUDES_END
 
 #define LOCTEXT_NAMESPACE "FChip8EmulatorModule"
