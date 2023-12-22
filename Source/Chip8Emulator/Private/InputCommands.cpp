@@ -10,22 +10,38 @@ const uint8_t* InputCommands::GetKeyboardState()
 
 bool InputCommands::IsInputPending()
 {
+	if (!InputEventQueue.IsEmpty())
+	{
+		InputEventQueue.Dequeue(PoppedInputEvent);
+		return true;
+	}
 	return false;
 }
 
 chipotto::EmuKey InputCommands::GetKey()
 {
-	return chipotto::EmuKey();
+	return PoppedInputEvent.Key;
 }
 
 bool InputCommands::IsKeyPressed(const chipotto::EmuKey key)
 {
-	return false;
+	return KeyStatuses[key];
 }
 
 chipotto::InputType InputCommands::GetInputEventType()
 {
-	return chipotto::InputType();
+	return PoppedInputEvent.Value;
+}
+
+void InputCommands::EnqueueInputEvent(const chipotto::EmuKey key, const chipotto::InputType type)
+{
+	
+	InputEventQueue.Enqueue(KeyInputEvent{key, type});
+}
+
+void InputCommands::UpdateKeyStatus(const chipotto::EmuKey key, const bool IsPressed)
+{
+	KeyStatuses[key] = IsPressed;
 }
 
 InputCommands::InputCommands()

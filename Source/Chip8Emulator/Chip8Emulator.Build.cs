@@ -21,7 +21,8 @@ public class Chip8Emulator : ModuleRules
 			{
 				"Core",
                 "Chip8EmulatorLibrary",
-				"Projects"
+				"Projects",
+				"EnhancedInput"
 
 				// ... add other public dependencies that you statically link with here ...
 			}
