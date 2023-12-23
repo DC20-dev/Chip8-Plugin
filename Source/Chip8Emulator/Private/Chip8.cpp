@@ -20,6 +20,7 @@ AChip8::AChip8()
 
 	DefaultBackgroundColor = FColor::Black;
 	DefaultSpriteColor = FColor::White;
+	AutoPossessAI = EAutoPossessAI::Disabled;
 
 }
 
@@ -27,7 +28,6 @@ AChip8::AChip8()
 void AChip8::BeginPlay()
 {
 	Super::BeginPlay();
-	AutoPossessAI = EAutoPossessAI::Disabled;
 
 	Screen = UTexture2D::CreateTransient(width, height);
 
