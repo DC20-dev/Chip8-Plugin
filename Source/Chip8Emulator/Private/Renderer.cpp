@@ -9,7 +9,7 @@ Renderer::Renderer(const int in_width, const int in_height, UTexture2D* virtualS
 	// BGRA8
 	EmulatorScreen = virtualScreen;
 
-	FTexture2DMipMap* Mipmap = &(EmulatorScreen->PlatformData->Mips[0]);
+	FTexture2DMipMap* Mipmap = &(EmulatorScreen->GetPlatformData()->Mips[0]);
 	ImageData = &(Mipmap->BulkData);
 }
 

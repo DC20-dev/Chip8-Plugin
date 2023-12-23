@@ -8,18 +8,15 @@ THIRD_PARTY_INCLUDES_START
 #include "Chip8EmulatorLibrary/Public/gamefile.h"
 THIRD_PARTY_INCLUDES_END
 #include "EmulatorKeys.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/Actor.h"
 #include "InputCommands.h"
 #include "RandomGenerator.h"
 #include "Renderer.h"
 #include "Chip8.generated.h"
 
-class UInputMappingContext;
-class UEmulatorInputConfig;
-
 
 UCLASS(Blueprintable, BlueprintType)
-class CHIP8EMULATOR_API AChip8 : public APawn
+class CHIP8EMULATOR_API AChip8 : public AActor
 {
 	GENERATED_BODY()
 	
@@ -30,10 +27,6 @@ public:
 public:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	UTexture2D* Screen = nullptr;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UEmulatorInputConfig* InputConfiguration = nullptr;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UInputMappingContext* InputMapping = nullptr;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UMaterialInterface* ScreenMaterial = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -65,8 +58,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	UMaterialInstanceDynamic* GetDynamicMaterialInstance() const;
 
 	UFUNCTION(BlueprintCallable)
