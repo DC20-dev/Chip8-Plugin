@@ -39,6 +39,6 @@ public:
 
 protected:
 	TQueue<KeyInputEvent> InputEventQueue;
-	TStaticArray<bool, 0x10> KeyStatuses;
+	TStaticArray<bool, 0x11> KeyStatuses;
 	KeyInputEvent PoppedInputEvent;
 };

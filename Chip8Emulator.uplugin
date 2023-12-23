@@ -19,6 +19,12 @@
 			"Name": "Chip8Emulator",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
-		},
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "EnhancedInput",
+			"Enabled": true
+		}
 	]
 }
