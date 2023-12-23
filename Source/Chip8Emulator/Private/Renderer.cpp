@@ -7,7 +7,7 @@ Renderer::Renderer(const int in_width, const int in_height, UTexture2D* virtualS
 	EmuRenderer(in_width, in_height), EmulatorScreen(virtualScreen)
 {
 	// BGRA8
-	EmulatorScreen = UTexture2D::CreateTransient(in_width, in_height);
+	EmulatorScreen = virtualScreen;
 
 	FTexture2DMipMap* Mipmap = &(EmulatorScreen->PlatformData->Mips[0]);
 	ImageData = &(Mipmap->BulkData);
@@ -77,10 +77,10 @@ int Renderer::Draw(uint8_t const x_coord, const uint8_t y_coord,
 				out_collision = true;
 			}
 
-			RawScreenData[pixel_index + 0] = color * ScreenTint.B;
-			RawScreenData[pixel_index + 1] = color * ScreenTint.G;
-			RawScreenData[pixel_index + 2] = color * ScreenTint.R;
-			RawScreenData[pixel_index + 3] = color * ScreenTint.A;
+			RawScreenData[pixel_index + 0] = color;
+			RawScreenData[pixel_index + 1] = color;
+			RawScreenData[pixel_index + 2] = color;
+			RawScreenData[pixel_index + 3] = color;
 		}
 	}
 
@@ -95,22 +95,22 @@ bool Renderer::IsValid()
 	return EmulatorScreen->IsValidLowLevel() && ImageData != nullptr;
 }
 
-void Renderer::SetScreenTint(FColor tint)
+void Renderer::SetSpritesTint(const FColor tint)
 {
 	ScreenTint = tint;
 }
 
-void Renderer::SetBackgroundTint(FColor tint)
+void Renderer::SetBackgroundTint(const FColor tint)
 {
 	BackgroundTint = tint;
 }
 
-FColor Renderer::GetScreenTint()
+FColor Renderer::GetSpritesTint() const
 {
 	return ScreenTint;
 }
 
-FColor Renderer::GetBackgroundTint()
+FColor Renderer::GetBackgroundTint() const
 {
 	return BackgroundTint;
 }

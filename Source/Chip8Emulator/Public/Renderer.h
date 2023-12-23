@@ -22,11 +22,10 @@ public:
 		bool& out_collision) override;
 
 	virtual bool IsValid() override;
-
-	void SetScreenTint(FColor tint);
-	void SetBackgroundTint(FColor tint);
-	FColor GetScreenTint();
-	FColor GetBackgroundTint();
+	void SetSpritesTint(const FColor tint);
+	void SetBackgroundTint(const FColor tint);
+	FColor GetSpritesTint()const;
+	FColor GetBackgroundTint() const;
 
 protected:
 	FColor ScreenTint = FColor::White;

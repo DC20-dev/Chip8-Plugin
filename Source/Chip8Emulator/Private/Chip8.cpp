@@ -9,8 +9,18 @@
 // Sets default values
 AChip8::AChip8()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	ConstructorHelpers::FObjectFinder<UMaterial> FoundMaterial(TEXT("Engine.Material'/Chip8Emulator/M_Chip8ScreenMaster.M_Chip8ScreenMaster'"));
+	if (FoundMaterial.Object)
+	{
+		ScreenMaterial = FoundMaterial.Object;
+	}
+
+	DefaultBackgroundColor = FColor::Black;
+	DefaultSpriteColor = FColor::White;
+
 }
 
 // Called when the game starts or when spawned
@@ -19,11 +29,20 @@ void AChip8::BeginPlay()
 	Super::BeginPlay();
 	AutoPossessAI = EAutoPossessAI::Disabled;
 
-	RendererInstance = new Renderer(64, 32, Screen);
+	Screen = UTexture2D::CreateTransient(width, height);
+
+	RendererInstance = new Renderer(width, height, Screen);
 	InputCommandInstance = new InputCommands();
 	GeneratorInstance = new RandomGenerator();
 
 	EmulatorInstance = new chipotto::Emulator(RendererInstance, InputCommandInstance, GeneratorInstance);
+
+	// get the predefined material in content
+	
+	DynamicMaterial = UMaterialInstanceDynamic::Create(ScreenMaterial, this);
+	DynamicMaterial->SetTextureParameterValue("ScreenTexture", Screen);
+	SetSpritesTint(DefaultSpriteColor);
+	SetBackgroundTint(DefaultBackgroundColor);
 }
 
 void AChip8::Destroyed()
@@ -108,6 +127,11 @@ void AChip8::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Subsystem->AddMappingContext(InputMapping, 0);
 }
 
+UMaterialInstanceDynamic* AChip8::GetDynamicMaterialInstance() const
+{
+	return DynamicMaterial;
+}
+
 void AChip8::HardReset()
 {
 	EmulatorInstance->HardResetEmulator();
@@ -118,12 +142,12 @@ void AChip8::SetDoWrap(const bool DoWrap)
 	EmulatorInstance->SetDoWrap(DoWrap);
 }
 
-void AChip8::SetScreenTint(FColor tint)
+void AChip8::SetSpritesTint(FColor tint)
 {
 	if (RendererInstance->IsValid())
 	{
-		RendererInstance->SetScreenTint(tint);
-		// should trigger refresh
+		RendererInstance->SetSpritesTint(tint);
+		DynamicMaterial->SetVectorParameterValue("SpritesTint", tint);
 	}
 }
 
@@ -132,18 +156,26 @@ void AChip8::SetBackgroundTint(FColor tint)
 	if (RendererInstance->IsValid())
 	{
 		RendererInstance->SetBackgroundTint(tint);
-		// should trigger refresh
+		DynamicMaterial->SetVectorParameterValue("BackgroundTint", tint);
 	}
 }
 
-FColor AChip8::GetScreenTint()
+FColor AChip8::GetSpritesTint()
 {
-	return RendererInstance->GetScreenTint();
+	if (RendererInstance->IsValid())
+	{
+		return RendererInstance->GetSpritesTint();
+	}
+	return FColor::White;
 }
 
 FColor AChip8::GetBackgroundTint()
 {
-	return RendererInstance->GetBackgroundTint();
+	if (RendererInstance->IsValid())
+	{
+		return RendererInstance->GetBackgroundTint();
+	}
+	return FColor::Black;
 }
 
 void AChip8::HexKeyboardKeyEvent(const EEmulatorKeys key, const bool isKeyDown)

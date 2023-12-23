@@ -18,7 +18,7 @@ class UInputMappingContext;
 class UEmulatorInputConfig;
 
 
-UCLASS()
+UCLASS(Blueprintable, BlueprintType)
 class CHIP8EMULATOR_API AChip8 : public APawn
 {
 	GENERATED_BODY()
@@ -29,11 +29,17 @@ public:
 
 public:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-	UTexture2D* Screen;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UEmulatorInputConfig* InputConfiguration;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UInputMappingContext* InputMapping;
+	UTexture2D* Screen = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UEmulatorInputConfig* InputConfiguration = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UInputMappingContext* InputMapping = nullptr;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UMaterialInterface* ScreenMaterial = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FColor DefaultSpriteColor;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FColor DefaultBackgroundColor;
 
 protected:
 
@@ -41,6 +47,11 @@ protected:
 	Renderer* RendererInstance = nullptr;
 	InputCommands* InputCommandInstance = nullptr;
 	chipotto::Emulator* EmulatorInstance = nullptr;
+	UPROPERTY(BlueprintReadonly)
+	UMaterialInstanceDynamic* DynamicMaterial = nullptr;
+
+	uint8 width = 64;
+	uint8 height = 32;
 
 protected:
 	// Called when the game starts or when spawned
@@ -56,6 +67,7 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UMaterialInstanceDynamic* GetDynamicMaterialInstance() const;
 
 	UFUNCTION(BlueprintCallable)
 	void HardReset();
@@ -64,13 +76,13 @@ public:
 	void SetDoWrap(const bool DoWrap);
 
 	UFUNCTION(BlueprintCallable)
-	void SetScreenTint(FColor tint);
+	void SetSpritesTint(FColor tint);
 
 	UFUNCTION(BlueprintCallable)
 	void SetBackgroundTint(FColor tint);
 
 	UFUNCTION(BlueprintCallable)
-	FColor GetScreenTint();
+	FColor GetSpritesTint();
 
 	UFUNCTION(BlueprintCallable)
 	FColor GetBackgroundTint();
