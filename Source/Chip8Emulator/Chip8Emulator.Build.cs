@@ -22,7 +22,8 @@ public class Chip8Emulator : ModuleRules
 				"Core",
                 "Chip8EmulatorLibrary",
 				"Projects",
-				"EnhancedInput"
+				"EnhancedInput",
+				"UnrealEd"
 
 				// ... add other public dependencies that you statically link with here ...
 			}

@@ -38,6 +38,8 @@ void AChip8::BeginPlay()
 	DynamicMaterial->SetTextureParameterValue("ScreenTexture", Screen);
 	SetSpritesTint(DefaultSpriteColor);
 	SetBackgroundTint(DefaultBackgroundColor);
+
+	EmulatorInstance->Load(Rom->GetNewGamefileFromRom());
 }
 
 void AChip8::Destroyed()

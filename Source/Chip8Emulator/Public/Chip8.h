@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Chip8Rom.h"
 THIRD_PARTY_INCLUDES_START
 #include "Chip8EmulatorLibrary/Public/emulator.h"
 #include "Chip8EmulatorLibrary/Public/gamefile.h"
@@ -33,6 +34,8 @@ public:
 	FColor DefaultSpriteColor;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FColor DefaultBackgroundColor;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UChip8Rom* Rom;
 
 protected:
 
