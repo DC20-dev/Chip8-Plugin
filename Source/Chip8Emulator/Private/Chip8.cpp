@@ -33,7 +33,7 @@ void AChip8::BeginPlay()
 	EmulatorInstance = new chipotto::Emulator(RendererInstance, InputCommandInstance, GeneratorInstance);
 
 	// get the predefined material in content
-	
+
 	DynamicMaterial = UMaterialInstanceDynamic::Create(ScreenMaterial, this);
 	DynamicMaterial->SetTextureParameterValue("ScreenTexture", Screen);
 	SetSpritesTint(DefaultSpriteColor);
@@ -71,17 +71,15 @@ void AChip8::KeyUpEventReceived(const chipotto::EmuKey key)
 void AChip8::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	EmulatorInstance->Tick(DeltaTime);
+	if (IsRunning)
+	{
+		EmulatorInstance->Tick(DeltaTime);
+	}
 }
 
 UMaterialInstanceDynamic* AChip8::GetDynamicMaterialInstance() const
 {
 	return DynamicMaterial;
-}
-
-void AChip8::HardReset()
-{
-	EmulatorInstance->HardResetEmulator();
 }
 
 void AChip8::SetDoWrap(const bool DoWrap)
@@ -123,6 +121,40 @@ FColor AChip8::GetBackgroundTint()
 		return RendererInstance->GetBackgroundTint();
 	}
 	return FColor::Black;
+}
+
+bool AChip8::LoadRom(UChip8Rom* RomToLoad)
+{
+	EmulatorInstance->HardResetEmulator();
+	if (EmulatorInstance->Load(RomToLoad->GetNewGamefileFromRom()))
+	{
+		Rom = RomToLoad;
+		return true;
+	}
+	return false;
+}
+
+void AChip8::SwitchON()
+{
+	IsRunning = true;
+}
+
+void AChip8::SwitchOFF()
+{
+	IsRunning = false;
+	EmulatorInstance->HardResetEmulator();
+}
+
+void AChip8::Reboot()
+{
+	SwitchOFF();
+	FTimerHandle timerHandle;
+	GetWorldTimerManager().SetTimer(timerHandle, this, &AChip8::SwitchON, 1.5f);
+}
+
+void AChip8::Start()
+{
+	SwitchON();
 }
 
 void AChip8::HexKeyboardKeyEvent(const EEmulatorKeys key, const bool isKeyDown)

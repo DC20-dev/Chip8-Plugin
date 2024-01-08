@@ -25,7 +25,8 @@ public:
 	// Sets default values for this actor's properties
 	AChip8();
 
-public:
+protected:
+
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	UTexture2D* Screen = nullptr;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -35,9 +36,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FColor DefaultBackgroundColor;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UChip8Rom* Rom;
-
-protected:
+	UChip8Rom* Rom = nullptr;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool IsRunning = false;
 
 	RandomGenerator* GeneratorInstance = nullptr;
 	Renderer* RendererInstance = nullptr;
@@ -57,14 +58,14 @@ protected:
 	void KeyDownEventReceived(const chipotto::EmuKey, const chipotto::InputType);
 	void KeyUpEventReceived(const chipotto::EmuKey key);
 
+	UFUNCTION(CallInEditor)
+	void Start();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UMaterialInstanceDynamic* GetDynamicMaterialInstance() const;
-
-	UFUNCTION(BlueprintCallable)
-	void HardReset();
 
 	UFUNCTION(BlueprintCallable)
 	void SetDoWrap(const bool DoWrap);
@@ -80,6 +81,18 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FColor GetBackgroundTint();
+
+	UFUNCTION(BlueprintCallable)
+	bool LoadRom(UChip8Rom* RomToLoad);
+
+	UFUNCTION(BlueprintCallable)
+	void SwitchON();
+
+	UFUNCTION(BlueprintCallable)
+	void SwitchOFF();
+
+	UFUNCTION(BlueprintCallable)
+	void Reboot();
 
 	// UFUNCTION bound to the input system on possession.
 	// This function is exposed to allow different input handling for the emulator
