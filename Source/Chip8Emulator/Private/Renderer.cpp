@@ -2,12 +2,20 @@
 
 
 #include "Renderer.h"
+#include "Chip8Emulator.h"
 
-Renderer::Renderer(const int in_width, const int in_height, UTexture2D* virtualScreen):
-	EmuRenderer(in_width, in_height), EmulatorScreen(virtualScreen)
+Renderer::Renderer(const int in_width, const int in_height, UTexture2D** virtualScreen):
+	EmuRenderer(in_width, in_height)
 {
+
+	EmulatorScreen = UTexture2D::CreateTransient(width, height, EPixelFormat::PF_G8);
+	EmulatorScreen->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
+	EmulatorScreen->CompressionSettings = TextureCompressionSettings::TC_Grayscale;
+	EmulatorScreen->SRGB = false;
+	EmulatorScreen->Filter = TextureFilter::TF_Nearest;
+	EmulatorScreen->UpdateResource();
 	// BGRA8
-	EmulatorScreen = virtualScreen;
+	*virtualScreen = EmulatorScreen;
 
 	FTexture2DMipMap* Mipmap = &(EmulatorScreen->GetPlatformData()->Mips[0]);
 	ImageData = &(Mipmap->BulkData);
@@ -21,22 +29,21 @@ void Renderer::ClearScreen()
 {
 	if (!IsValid())
 	{
-		UE_LOG(LogTemp, Error, TEXT("Renderer is not valid!"));
+		UE_LOG(LogChip8, Error, TEXT("Renderer is not valid!"));
 		return;
 	}
 	uint8* RawScreenData = (uint8*)ImageData->Lock(LOCK_READ_WRITE);
 	
-	for (size_t i = 0; i < width * 4 * height; i+=4)
+	for (size_t i = 0; i < width * height; i++)
 	{
-		//BGRA
-		RawScreenData[i+0] = BackgroundTint.B;
-		RawScreenData[i+1] = BackgroundTint.G;
-		RawScreenData[i+2] = BackgroundTint.R;
-		RawScreenData[i+3] = BackgroundTint.A;
+		//G
+		RawScreenData[i] = 0x00;
 	}
 
 	ImageData->Unlock();
 	EmulatorScreen->UpdateResource();
+
+	UE_LOG(LogChip8, Log, TEXT("Cleared Screen"));
 }
 
 int Renderer::Draw(uint8_t const x_coord, const uint8_t y_coord,
@@ -45,13 +52,15 @@ int Renderer::Draw(uint8_t const x_coord, const uint8_t y_coord,
 {
 	if (!IsValid())
 	{
-		UE_LOG(LogTemp, Error, TEXT("Renderer is not valid!"));
+		UE_LOG(LogChip8, Error, TEXT("Renderer is not valid!"));
 		return -1;
 	}
 
+	UE_LOG(LogChip8, Warning, TEXT("Drawing Screen..."));
+
 	uint8* RawScreenData = (uint8*)ImageData->Lock(LOCK_READ_WRITE);
 
-	int pitch = width * 4;
+	int pitch = width;
 
 	for (int y = 0; y < sprite_height; ++y)
 	{
@@ -68,7 +77,7 @@ int Renderer::Draw(uint8_t const x_coord, const uint8_t y_coord,
 			}
 			if (!do_wrap && x + x_coord >= width)
 				break;
-			int pixel_index = ((x + x_coord) % width) * 4 + pitch * ((y + y_coord) % height);
+			int pixel_index = ((x + x_coord) % width) + pitch * ((y + y_coord) % height);
 			uint8_t existing_pixel = RawScreenData[pixel_index];
 			color ^= existing_pixel;
 
@@ -77,10 +86,8 @@ int Renderer::Draw(uint8_t const x_coord, const uint8_t y_coord,
 				out_collision = true;
 			}
 
-			RawScreenData[pixel_index + 0] = color;
-			RawScreenData[pixel_index + 1] = color;
-			RawScreenData[pixel_index + 2] = color;
-			RawScreenData[pixel_index + 3] = color;
+			RawScreenData[pixel_index] = color;
+			UE_LOG(LogChip8, Log, TEXT("color = %x at pixel (%d, %d)"), color, x, y);
 		}
 	}
 

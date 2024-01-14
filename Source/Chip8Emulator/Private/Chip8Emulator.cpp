@@ -5,6 +5,8 @@
 
 #define LOCTEXT_NAMESPACE "FChip8EmulatorModule"
 
+DEFINE_LOG_CATEGORY(LogChip8);
+
 void FChip8EmulatorModule::StartupModule()
 {
 	FString BaseDir = IPluginManager::Get().FindPlugin("Chip8Emulator")->GetBaseDir();
@@ -14,8 +16,10 @@ void FChip8EmulatorModule::StartupModule()
 
 	if(!FLibraryHandle)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Could not load Chip8.dll"));
+		UE_LOG(LogChip8, Error, TEXT("Could not load Chip8.dll"));
 	}
+
+	UE_LOG(LogChip8, Log, TEXT("Chip8.dll loaded."));
 }
 
 void FChip8EmulatorModule::ShutdownModule()

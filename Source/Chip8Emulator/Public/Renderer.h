@@ -13,7 +13,7 @@ THIRD_PARTY_INCLUDES_END
 class CHIP8EMULATOR_API Renderer: public chipotto::EmuRenderer
 {
 public:
-	Renderer(const int in_width, const int in_height, UTexture2D* virtualScreen);
+	Renderer(const int in_width, const int in_height, UTexture2D** virtualScreen);
 	~Renderer();
 
 	virtual void ClearScreen() override;

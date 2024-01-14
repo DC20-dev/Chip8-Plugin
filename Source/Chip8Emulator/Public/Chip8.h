@@ -9,6 +9,7 @@ THIRD_PARTY_INCLUDES_START
 #include "Chip8EmulatorLibrary/Public/gamefile.h"
 THIRD_PARTY_INCLUDES_END
 #include "EmulatorKeys.h"
+#include "Engine/StaticMeshActor.h"
 #include "GameFramework/Actor.h"
 #include "InputCommands.h"
 #include "RandomGenerator.h"
@@ -40,6 +41,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool IsRunning = false;
 
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* TestMesh;
+
 	RandomGenerator* GeneratorInstance = nullptr;
 	Renderer* RendererInstance = nullptr;
 	InputCommands* InputCommandInstance = nullptr;
@@ -60,6 +64,9 @@ protected:
 
 	UFUNCTION(CallInEditor)
 	void Start();
+
+	UFUNCTION(CallInEditor)
+	void ClearScreen();
 
 public:	
 	// Called every frame

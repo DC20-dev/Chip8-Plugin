@@ -2,6 +2,7 @@
 
 
 #include "Chip8.h"
+#include "Chip8Emulator.h"
 
 // Sets default values
 AChip8::AChip8()
@@ -17,6 +18,9 @@ AChip8::AChip8()
 
 	DefaultBackgroundColor = FColor::Black;
 	DefaultSpriteColor = FColor::White;
+
+	TestMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Test Mesh"));
+	TestMesh->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -24,9 +28,7 @@ void AChip8::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Screen = UTexture2D::CreateTransient(width, height);
-
-	RendererInstance = new Renderer(width, height, Screen);
+	RendererInstance = new Renderer(width, height, &Screen);
 	InputCommandInstance = new InputCommands();
 	GeneratorInstance = new RandomGenerator();
 
@@ -38,8 +40,11 @@ void AChip8::BeginPlay()
 	DynamicMaterial->SetTextureParameterValue("ScreenTexture", Screen);
 	SetSpritesTint(DefaultSpriteColor);
 	SetBackgroundTint(DefaultBackgroundColor);
+	TestMesh->SetMaterial(0, DynamicMaterial);
 
 	EmulatorInstance->Load(Rom->GetNewGamefileFromRom());
+	UE_LOG(LogChip8, Log, TEXT("Loaded Rom in begin play"));
+	RendererInstance->ClearScreen();
 }
 
 void AChip8::Destroyed()
@@ -73,7 +78,8 @@ void AChip8::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (IsRunning)
 	{
-		EmulatorInstance->Tick(DeltaTime);
+		bool TickResult = EmulatorInstance->Tick(DeltaTime);
+		if(!TickResult) UE_LOG(LogChip8, Log, TEXT("tick returned False"));
 	}
 }
 
@@ -155,6 +161,11 @@ void AChip8::Reboot()
 void AChip8::Start()
 {
 	SwitchON();
+}
+
+void AChip8::ClearScreen()
+{
+	RendererInstance->ClearScreen();
 }
 
 void AChip8::HexKeyboardKeyEvent(const EEmulatorKeys key, const bool isKeyDown)

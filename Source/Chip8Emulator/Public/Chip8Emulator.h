@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(LogChip8, Log, All);
+
 class FChip8EmulatorModule : public IModuleInterface
 {
 public:

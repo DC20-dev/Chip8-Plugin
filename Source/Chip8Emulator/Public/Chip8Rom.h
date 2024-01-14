@@ -26,6 +26,7 @@ protected:
 #if WITH_EDITOR
 	friend class UCH8Factory;
 #endif
+	UPROPERTY()
 	TArray<uint8> RomData;
 	
 public:
