@@ -2,6 +2,7 @@
 
 
 #include "InputCommands.h"
+#include "Chip8Emulator.h"
 
 const uint8_t* InputCommands::GetKeyboardState()
 {
@@ -50,4 +51,5 @@ InputCommands::InputCommands()
 
 InputCommands::~InputCommands()
 {
+	UE_LOG(LogChip8, Log, TEXT("InputCommands instance destroyed"));
 }

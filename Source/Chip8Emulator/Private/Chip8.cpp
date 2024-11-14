@@ -19,8 +19,8 @@ AChip8::AChip8()
 	DefaultBackgroundColor = FColor::Black;
 	DefaultSpriteColor = FColor::White;
 
-	TestMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Test Mesh"));
-	TestMesh->SetupAttachment(RootComponent);
+	ScreenMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Test Mesh"));
+	RootComponent = ScreenMesh;
 }
 
 // Called when the game starts or when spawned
@@ -40,10 +40,13 @@ void AChip8::BeginPlay()
 	DynamicMaterial->SetTextureParameterValue("ScreenTexture", Screen);
 	SetSpritesTint(DefaultSpriteColor);
 	SetBackgroundTint(DefaultBackgroundColor);
-	TestMesh->SetMaterial(0, DynamicMaterial);
+	ScreenMesh->SetMaterial(0, DynamicMaterial);
 
-	EmulatorInstance->Load(Rom->GetNewGamefileFromRom());
-	UE_LOG(LogChip8, Log, TEXT("Loaded Rom in begin play"));
+	if (Rom)
+	{
+		EmulatorInstance->Load(Rom->GetNewGamefileFromRom());
+		UE_LOG(LogChip8, Log, TEXT("Loaded Rom in begin play"));
+	}
 	RendererInstance->ClearScreen();
 }
 
@@ -62,6 +65,7 @@ void AChip8::KeyDownEventReceived(const chipotto::EmuKey key, const chipotto::In
 		InputCommandInstance->EnqueueInputEvent(key, type);
 		InputCommandInstance->UpdateKeyStatus(key, true);
 	}
+	UE_LOG(LogChip8, Log, TEXT("Key down event received; input command instance: %s"), InputCommandInstance ? TEXT("True") : TEXT("False"));
 }
 
 void AChip8::KeyUpEventReceived(const chipotto::EmuKey key)
@@ -79,7 +83,10 @@ void AChip8::Tick(float DeltaTime)
 	if (IsRunning)
 	{
 		bool TickResult = EmulatorInstance->Tick(DeltaTime);
-		if(!TickResult) UE_LOG(LogChip8, Log, TEXT("tick returned False"));
+		if (!TickResult) 
+		{
+			UE_LOG(LogChip8, Log, TEXT("EmulatorInstance tick returns false"));
+		}
 	}
 }
 
@@ -173,13 +180,16 @@ void AChip8::HexKeyboardKeyEvent(const EEmulatorKeys key, const bool isKeyDown)
 	if (isKeyDown && key != EEmulatorKeys::K_QUIT)
 	{
 		KeyDownEventReceived(static_cast<chipotto::EmuKey>(key), chipotto::InputType::KEYDOWN);
+		UE_LOG(LogChip8, Log, TEXT("Key down event"));
 	}
 	else if (isKeyDown && key == EEmulatorKeys::K_QUIT)
 	{
 		KeyDownEventReceived(static_cast<chipotto::EmuKey>(key), chipotto::InputType::QUIT);
+		UE_LOG(LogChip8, Log, TEXT("Quit event"));
 	}
 	else
 	{
 		KeyUpEventReceived(static_cast<chipotto::EmuKey>(key));
+		UE_LOG(LogChip8, Log, TEXT("Key up event"));
 	}
 }

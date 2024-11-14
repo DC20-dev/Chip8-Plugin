@@ -42,8 +42,6 @@ void Renderer::ClearScreen()
 
 	ImageData->Unlock();
 	EmulatorScreen->UpdateResource();
-
-	UE_LOG(LogChip8, Log, TEXT("Cleared Screen"));
 }
 
 int Renderer::Draw(uint8_t const x_coord, const uint8_t y_coord,
@@ -55,8 +53,6 @@ int Renderer::Draw(uint8_t const x_coord, const uint8_t y_coord,
 		UE_LOG(LogChip8, Error, TEXT("Renderer is not valid!"));
 		return -1;
 	}
-
-	UE_LOG(LogChip8, Warning, TEXT("Drawing Screen..."));
 
 	uint8* RawScreenData = (uint8*)ImageData->Lock(LOCK_READ_WRITE);
 
@@ -87,7 +83,6 @@ int Renderer::Draw(uint8_t const x_coord, const uint8_t y_coord,
 			}
 
 			RawScreenData[pixel_index] = color;
-			UE_LOG(LogChip8, Log, TEXT("color = %x at pixel (%d, %d)"), color, x, y);
 		}
 	}
 

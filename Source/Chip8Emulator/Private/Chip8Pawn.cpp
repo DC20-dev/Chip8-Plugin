@@ -16,8 +16,6 @@ AChip8Pawn::AChip8Pawn()
 	PrimaryActorTick.bCanEverTick = true;
 	AutoPossessAI = EAutoPossessAI::Disabled;
 
-	EmulatorActorInstance = CreateDefaultSubobject<AChip8>("Chip8");
-
 	ConstructorHelpers::FObjectFinder<UEmulatorInputConfig> FoundInputConfig(TEXT(
 		"Chip8Emulator.EmulatorInputConfig'/Chip8Emulator/DA_DefaultEmulatorInputConfig.DA_DefaultEmulatorInputConfig'"));
 	if (FoundInputConfig.Object)
@@ -37,7 +35,12 @@ AChip8Pawn::AChip8Pawn()
 void AChip8Pawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	EmulatorActorInstance = GetWorld()->SpawnActor<AChip8>(GetActorLocation(), GetActorRotation());
+	if (Rom)
+	{
+		EmulatorActorInstance->LoadRom(Rom);
+	}
+	EmulatorActorInstance->SwitchON();
 }
 
 // Called every frame

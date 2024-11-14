@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Chip8Rom.h"
+#include "CoreMinimal.h"
 THIRD_PARTY_INCLUDES_START
 #include "Chip8EmulatorLibrary/Public/emulator.h"
 #include "Chip8EmulatorLibrary/Public/gamefile.h"
@@ -26,29 +26,29 @@ public:
 	// Sets default values for this actor's properties
 	AChip8();
 
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* ScreenMesh;
+
 protected:
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	UPROPERTY(BlueprintReadOnly)
 	UTexture2D* Screen = nullptr;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere)
 	UMaterialInterface* ScreenMaterial = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FColor DefaultSpriteColor;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FColor DefaultBackgroundColor;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UChip8Rom* Rom = nullptr;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly)
 	bool IsRunning = false;
-
-	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* TestMesh;
 
 	RandomGenerator* GeneratorInstance = nullptr;
 	Renderer* RendererInstance = nullptr;
 	InputCommands* InputCommandInstance = nullptr;
 	chipotto::Emulator* EmulatorInstance = nullptr;
-	UPROPERTY(BlueprintReadonly)
+	UPROPERTY()
 	UMaterialInstanceDynamic* DynamicMaterial = nullptr;
 
 	uint8 width = 64;

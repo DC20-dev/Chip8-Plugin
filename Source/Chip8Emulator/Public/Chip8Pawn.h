@@ -25,8 +25,10 @@ public:
 	UInputMappingContext* InputMapping = nullptr;
 
 protected:
-	UPROPERTY(BlueprintReadonly, VisibleAnywhere)
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	AChip8* EmulatorActorInstance = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UChip8Rom* Rom = nullptr;
 
 protected:
 	// Called when the game starts or when spawned
